@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>チャットアプリ</title>
+
+    <!-- <style>
+        #output {
+            height: 300px;
+            overflow: scroll;
+        }
+    </style> -->
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+<!-- ログイン画面 -->
+    </section>
+        <p>現在ログイン中です。</p>
+        <input type="button" value="ログアウト" class="logoutBtn">
+    </section>
+        
+<!-- 送信画面 -->
+
+    <div>
+        <div> 名前：<input type="text" id="uname"> </div>
+        <div>
+            <textarea id="text" cols="30" rows="10"></textarea>
+            <button id="send">送信</button>
+        </div>
+<!-- チャット画面 -->
+        </div>
+        <div id="output" style="overflow: auto;height: 300px;">
+        </div>
+    </div>
+    <!--/ コンテンツ表示画面 -->
+
+
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- JQuery -->
+
+
+<!--** 以下Firebase （firebaceからコピー 29~47行）**-->
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+    // 貼り付ける場所↓
+    import { getDatabase, ref, push, set, onChildAdded, remove,onChildRemoved} from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+    import { updateDoc, serverTimestamp } from "firebase/firestore";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDzTZz0FUL6msWdQ_KXbdkWp78VucCVl60",
+      authDomain: "dev245-9dcb8.firebaseapp.com",
+      projectId: "dev245-9dcb8",
+      storageBucket: "dev245-9dcb8.appspot.com",
+      messagingSenderId: "397119300991",
+      appId: "1:397119300991:web:5f11a83dc3d7986d6ba64a"
+    };
+
+    
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // この辺りに書いていきます
+    // ↓firebaseのおまじない
+    const db = getDatabase(app);
+    const dbRef = ref(db, 'dev245');
+    //時間取得
+    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    
+
+
+    // 送信処理を記述
+    $('#send').on('click',function(){
+        // id="uname"の場所を取得します
+        const uname = $('#uname').val();
+        // id="text"の場所を取得します
+        const text = $('#text').val();
+       
+        // 取得できてるか表示の確認！必須！
+        // alert(uname + text);
+
+        // データの塊を作ります🤗
+        // msg という名前で塊を作ります
+        // unameという鍵の名前
+        // textというカギの名前
+        // 作成したデータの塊をfirebaseに送信をします⇨つまりこれが保存になります🤗
+        const msg = {
+            uname: uname,
+            text: text,
+            timestamp: serverTimestamp(),
+        }
+        // firebaseに送る準備をしていることになります🤗
+        const newPostRef = push(dbRef) //データを送信できる準備(refは参照するの意味)
+        set(newPostRef, msg); // firebaseの登録できる場所に保存するイメージです🤗
+
+         // 受信処理を記述
+
+
+
+            // 送信後に、入力欄を空にしましょう🤗(ユーザーがちょっと嬉しい)
+            $('#uname').val("");
+            $('#text').val("");
+
+            // これを使うとどうなるかみてみましょう🤗(ユーザーがちょっと嬉しい)
+            $("#uname").focus();
+    
+        // send送信イベント この下消さない
+    });
+
+    onChildAdded(dbRef, function (data) {
+            // ここからが受信処理が始まります
+
+            // 登録されたデータを取得します🤗
+            const msg = data.val();
+            console.log(msg, '取得したデータの塊')
+            const key = data.key;
+            console.log(key, 'データの塊にアクセス')
+
+
+            // es6のテンプレートリテラル
+            let h =/* HTML */`
+            <div class="balloon">
+                <div class="faceicon"><img src="img/paa.jpeg" alt="" ></div>
+                <p class="says_name">${msg.uname}</P>
+                <p class="says">${msg.text}</P>
+                <p>${msg.timestamp}</p>
+            </div>
+            `;
+
+            $("#output").append(h);
+
+
+            // スクロール一番下をデフォルトに
+            const output = document.getElementById('output');
+            output.scrollTo(0, output.scrollHeight);
+
+        })
+
+
+
+
+  </script>
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chitalk</title>
+</head>
+<body>
+    <section>
+        <h1>chitalkへのログイン</h1>
+        <p>ログインしてください。</p>
+        <label>
+            Email<input type="text" name="email" size="30" maxlength="30" class="email">
+        </label>
+        <label>
+            Pass<input type="password" name="pass" size="30" maxlength="30" class="pass">    
+        </label>
+        <input type="button" value="ログイン" class="loginBtn">
+    </section>
+
+    <style>
+        body {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 15px;
+            font-size: 14px;
+            font-family: sans-serif;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        label {
+            display: block;
+            margin: 0 0 10px;
+        }
+        label input {
+            margin: 0 5px;
+        }
+    </style>
+    
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.2.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.2.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.2.1/firebase-analytics.js"></script>
+    <!-- 
+    initialize the SDK after all desired features are loaded, set useEmulator to false
+    to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script> 
+    <script src="js/auth.js"></script>
+</body>
+</html>
+
