@@ -1,6 +1,6 @@
 body {
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 15px;
   font-size: 14px;
@@ -19,9 +19,46 @@ label input {
 
 
 #output {
-            height: 300px;
             overflow: scroll;
+            padding:0;
+            background: #7494c0;
+            overflow: hidden;
+            max-width: 400px; 
+            margin: 0 auto 0;
+            font-size: 80%;
         }
+
+#text{
+  width: 80%;
+  height: 100%;
+  resize: none; /* これでユーザーのリサイズをできなくする */
+  border: 1px solid #ddd; /* 枠線をつけて領域を分かりやすく */
+  box-sizing: border-box; /* borderを付けてるので、border込の大きさにする */
+
+}
+
+#send{
+  width: 20%;
+ height: 100%;
+ background: #99dddd;
+ color: #fff;
+ font-size: 15px;
+ font-weight: bold;
+ border: 0;
+}
+
+.line__title{
+background: #273246;
+padding: 10px;
+text-align: center;
+font-size: 150%;
+color: #ffffff;
+}
+
+.message-area{
+  height: 10vh;
+  display: flex;
+}
 
 /*吹き出し*/
 .balloon,
@@ -36,8 +73,12 @@ label input {
   justify-content:flex-end;
 }
 .faceicon img{
-  width: 80px; /*任意のサイズ*/
+  width: 50px; 
   height: auto;
+  object-fit:cover;
+  margin:0 0 10px 0;
+  border-radius:100%;
+  
 }
 .balloon_r .faceicon{
   margin-left:25px;
@@ -53,7 +94,7 @@ label input {
   display: flex;
   flex-wrap: wrap;
   position: relative;
-  padding: 17px 13px 15px 18px;
+  padding: 15px 10px 13px 15px;
   border-radius: 12px;
   background: #99dddd;/*色は任意*/
   box-sizing:border-box;
@@ -62,10 +103,10 @@ label input {
 /*   align-items: center; */
 }
 .says p{
-  margin:8px 0 0 !important; 
+  /* margin:10px 0 0 !important;  */
 }
 .says p:first-child{
-  margin-top:0 !important;
+  /* margin-top:0 !important; */
 }
 .says:after {
   content: "";
@@ -83,5 +124,38 @@ label input {
 }
 
 .says_name{
-  font-size: small;
+  font-size:10px ;
+
 }
+
+#deleteKey{
+
+  background: none;
+	border: none;
+	outline: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+  color: aliceblue;
+  font-size:10px ;
+}
+
+#deleteKey p{
+  margin: 0;
+	font-size: 20px;
+	font-weight: bold;
+	color: transparent;
+	transition: 0.5s;
+}
+
+#deleteKey:hover p{
+  color: aliceblue;
+}
+
+
+
+
+
+
+
+ 

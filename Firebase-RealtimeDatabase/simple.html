@@ -15,24 +15,29 @@
 </head>
 <body>
 <!-- ログイン画面 -->
-    </section>
+    <section>
         <p>現在ログイン中です。</p>
-        <input type="button" value="ログアウト" class="logoutBtn">
+        <input type="button" value="ログアウト" id="logoutBtn">
     </section>
         
+
+<!-- チャット画面タイトル -->
+    <div class="line__title">
+        きょつのひとり部屋
+    </div>
+<!-- チャット画面タイトル -->
+        <div id="output"  class="line__contents scroll" style="overflow: auto;height: 500px;"></div>
+
 <!-- 送信画面 -->
 
-    <div>
-        <div> 名前：<input type="text" id="uname"> </div>
-        <div>
-            <textarea id="text" cols="30" rows="10"></textarea>
-            <button id="send">送信</button>
-        </div>
-<!-- チャット画面 -->
-        </div>
-        <div id="output" style="overflow: auto;height: 300px;">
-        </div>
+<div>
+    <!-- <div> 名前：<input type="text" id="uname"> </div> -->
+    <div class="message-area">
+        <textarea id="text" cols="50" rows="10"></textarea>
+        <button id="send">送信</button>
+        
     </div>
+    
     <!--/ コンテンツ表示画面 -->
 
 
@@ -47,8 +52,8 @@
     // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
     // 貼り付ける場所↓
-    import { getDatabase, ref, push, set, onChildAdded, remove,onChildRemoved} from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
-    import { updateDoc, serverTimestamp } from "firebase/firestore";
+    import { getDatabase, ref, push, set, onChildAdded, remove,onChildRemoved,serverTimestamp} from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged} from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
     // TODO: Add SDKs for Firebase products that you want to use
     // https://firebase.google.com/docs/web/setup#available-libraries
     // Your web app's Firebase configuration
@@ -68,12 +73,11 @@
 
     // この辺りに書いていきます
     // ↓firebaseのおまじない
-    const db = getDatabase(app);
+    const db = getDatabase(app);//Realtimefirebaseに接続
     const dbRef = ref(db, 'dev245');
     //時間取得
-    const timestamp = firebase.firestore.FieldValue.serverTimestamp();
+    const timestamp = serverTimestamp();
     
-
 
     // 送信処理を記述
     $('#send').on('click',function(){
@@ -91,9 +95,9 @@
         // textというカギの名前
         // 作成したデータの塊をfirebaseに送信をします⇨つまりこれが保存になります🤗
         const msg = {
-            uname: uname,
+            uname: "きょつ",
             text: text,
-            timestamp: serverTimestamp(),
+            timestamp: timestamp,
         }
         // firebaseに送る準備をしていることになります🤗
         const newPostRef = push(dbRef) //データを送信できる準備(refは参照するの意味)
@@ -122,30 +126,138 @@
             const key = data.key;
             console.log(key, 'データの塊にアクセス')
 
-
+            let now = msg.timestamp;//なぜ一度nowに入れないといけない？しんまろさんに聞く！
+            let date = new Date(now); //差分のミリ秒をnewDateに入れる！調べる！一旦入れる。下準備
+            //差分のミリ秒から時刻を割り戻す
+            let dates = date.getFullYear() + "年" + (date.getMonth() +1) + "月" + date.getDate() + "日 " + date.getHours() + "時" + date.getMinutes() + "分"
+            console.log(dates);
             // es6のテンプレートリテラル
             let h =/* HTML */`
             <div class="balloon">
                 <div class="faceicon"><img src="img/paa.jpeg" alt="" ></div>
-                <p class="says_name">${msg.uname}</P>
-                <p class="says">${msg.text}</P>
-                <p>${msg.timestamp}</p>
+               <div>
+                    <p class="says_name">${msg.uname}</P>
+                    <p class="says">${msg.text}</P>
+                    <!-- <button id="update">更新</button> -->
+                    <p>${dates}</p>
+                    <button id="deleteKey" name="${key}">削除</button>
+                </div>
             </div>
             `;
 
             $("#output").append(h);
-
-
+        
             // スクロール一番下をデフォルトに
             const output = document.getElementById('output');
             output.scrollTo(0, output.scrollHeight);
 
+        });
+
+        //#############################################
+        // データ削除（個別コメント）
+        //#############################################
+        // #deleteを押したらdbからデータを削除！
+        $(document).on("click", "#deleteKey", function () {;
+        // buttonのnameを取得してdbのリファレンスを削除します。
+        let target = $(this).attr("name");
+        console.log(target);
+        remove(ref(db, "dev245/" + target));
+
+        // 画面を更新して反映させます。
+        location.reload();
+
+        });
+
+        //#############################################
+        // データ更新（個別コメント）※今回実装できず
+        //#############################################
+
+        // $(document).on("click", "#update", function () {
+        // // buttonのnameを取得してdbのリファレンスをします。
+        // const update= $(this).attr("name");//そのコメントのKeyを指定
+        // console.log(update),"更新したデータ";
+        // update(ref(db, "dev245/" + update));//なんで＋を使うのか不明
+
+
+        // const updateName = (uname, text) => {
+        //     db.ref("dev245/" + text).update({
+        //         text: text,
+        //         timestamp: timestamp,
+
+        //     });
+        // };
+
+
+         // 受信処理を記述
+
+
+
+        //     // 送信後に、入力欄を空にしましょう🤗(ユーザーがちょっと嬉しい)
+        //     $('#uname').val("");
+        //     $('#text').val("");
+
+        //     // これを使うとどうなるかみてみましょう🤗(ユーザーがちょっと嬉しい)
+        //     $("#uname").focus();
+
+        // // 画面を更新して反映させます。
+        // location.reload();
+
+        // });
+
+
+        //#############################################
+        // GoogleAuth用
+        //#############################################
+        const provider = new GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+        const auth = getAuth();
+        
+        //#############################################
+        // loginしていれば処理します
+        //#############################################
+        onAuthStateChanged(auth,(user) => {
+            if(user){
+                const uid = user.uid;
+                //ユーザー用情報取得できます
+                if(user !== null) {
+                    user.providerDate.forEach((profile)=>{
+
+                        $("#uname").text(profile.displayName);
+                        $("prof").attr("scr",profile.photoURL);
+                    });
+                    $("#status").fadeOut(500);
+                }
+            }
+
+
         })
 
+        //###############################################
+        //Logout処理
+        //###############################################
+        $("#logoutBtn").on("click", function () {
+            // signInWithRedirect(auth, provider);
+            signOut(auth).then(() => {
+                // Sign-out successful.
+                _redirect();
+            }).catch((error) => {
+                // An error happened.
+                console.error(error);
+            });
+        });
 
 
+        //###############################################
+        //Login画面へリダイレクト(関数作成)
+        //###############################################
+        function _redirect(){
+            location.href="login.html";
+        }
 
-  </script>
+
+       
+
+ </script>
 
 
 
